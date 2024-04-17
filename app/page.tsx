@@ -7,7 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const Container = styled.main.attrs({
-  className: 'max-w-7xl mx-auto',
+  className: 'max-w-7xl mx-auto px-10 lg:px-0',
 })``
 
 const Grid = styled.div.attrs({
@@ -15,7 +15,8 @@ const Grid = styled.div.attrs({
 })``
 
 const PokemonItem = styled.div.attrs({
-  className: 'break-inside-avoid-column flex flex-col items-center',
+  className:
+    'break-inside-avoid-column flex flex-col items-center border border-black rounded-xl',
 })``
 
 const StyledImage = styled(Image)`
@@ -38,14 +39,20 @@ const Home = () => {
 
   return (
     <Container>
-      <form onSubmit={handleSearch}>
+      <form onSubmit={handleSearch} className="w-full flex my-10">
         <input
           type="text"
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           placeholder="Search Pokémon"
+          className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:border-blue-500"
         />
-        <button type="submit">Search</button>
+        <button
+          type="submit"
+          className="bg-gradient-to-r from-blue-400 to-indigo-800 text-white px-4 py-2 rounded-r-md"
+        >
+          Search
+        </button>
       </form>
       {isLoading && <div>Loading</div>}
       {isError && <div>Sorry, there was an error</div>}
@@ -57,12 +64,16 @@ const Home = () => {
                 <PokemonItem key={index}>
                   <Link href={`/pokemon/${pokemonItem?.name}`}>
                     <StyledImage
+                      className={'rounded-xl'}
                       height={300}
                       width={300}
                       src={`https://img.pokemondb.net/artwork/large/${pokemonItem?.name}.jpg`}
                       alt={pokemonItem?.name}
                     />
-                    <h3>{pokemonItem?.name}</h3>
+                    <hr />
+                    <div className={'text-xl font-bold p-5'}>
+                      {pokemonItem?.name}
+                    </div>
                   </Link>
                 </PokemonItem>
               )
@@ -77,12 +88,16 @@ const Home = () => {
               <PokemonItem key={index}>
                 <Link href={`/pokemon/${pokemonItem?.name}`}>
                   <StyledImage
+                    className={'rounded-xl'}
                     height={300}
                     width={300}
                     src={`https://img.pokemondb.net/artwork/large/${pokemonItem?.name}.jpg`}
                     alt={pokemonItem?.name}
                   />
-                  <h3>{pokemonItem?.name}</h3>
+                  <hr />
+                  <div className={'text-xl font-bold py-5'}>
+                    {pokemonItem?.name}
+                  </div>
                 </Link>
               </PokemonItem>
             )
