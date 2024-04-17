@@ -11,7 +11,6 @@ export const fetchPokemonByName = async (
 ): Promise<Pokemon[]> => {
   try {
     const { data } = await api.get<Pokemon>(`pokemon/${pokemon}`)
-    // Wrap the data in an array to maintain consistency
     return [data]
   } catch (error) {
     console.error('Error fetching Pokémon by name:', error)

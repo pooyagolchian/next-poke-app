@@ -6,12 +6,17 @@ import { fetchPokemonByName } from './services/pokemon'
 import Image from 'next/image'
 import Link from 'next/link'
 
+interface Pokemon {
+  name: string
+}
+
 const Container = styled.main.attrs({
   className: 'max-w-7xl mx-auto px-10 lg:px-0',
 })``
 
 const Grid = styled.div.attrs({
-  className: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10',
+  className:
+    'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pt-10 pb-20',
 })``
 
 const PokemonItem = styled.div.attrs({
@@ -21,25 +26,43 @@ const PokemonItem = styled.div.attrs({
 
 const StyledImage = styled(Image)`
   max-width: 100%;
-  height: 300px; /* Fixed height */
-  object-fit: cover; /* Maintain aspect ratio and cover container */
+  height: 300px;
+  object-fit: cover;
 `
 
-const Home = () => {
-  const [searchQuery, setSearchQuery] = useState('')
-  const { data, isLoading, isError, refetch } = useQuery({
+const Home = (): JSX.Element => {
+  const [searchQuery, setSearchQuery] = useState<string>('')
+  const { data, isLoading, isError, refetch } = useQuery<Pokemon[]>({
     queryFn: async () => await fetchPokemonByName(searchQuery),
     queryKey: ['pokemon', searchQuery],
   })
 
-  const handleSearch = async (e: any) => {
+  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     await refetch()
   }
 
+  const renderPokemon = (pokemonList: Pokemon[]) => {
+    return pokemonList.map((pokemonItem, index) => (
+      <PokemonItem key={index}>
+        <Link href={`/pokemon/${pokemonItem?.name}`}>
+          <StyledImage
+            className={'rounded-xl'}
+            height={300}
+            width={300}
+            src={`https://img.pokemondb.net/artwork/large/${pokemonItem?.name}.jpg`}
+            alt={pokemonItem?.name}
+          />
+          <hr />
+          <div className={'text-xl font-bold p-5'}>{pokemonItem?.name}</div>
+        </Link>
+      </PokemonItem>
+    ))
+  }
+
   return (
     <Container>
-      <form onSubmit={handleSearch} className="w-full flex my-10">
+      <form onSubmit={handleSearch} className="w-full flex mt-10">
         <input
           type="text"
           value={searchQuery}
@@ -57,53 +80,9 @@ const Home = () => {
       {isLoading && <div>Loading</div>}
       {isError && <div>Sorry, there was an error</div>}
       {data && searchQuery.length === 0 && (
-        <Grid>
-          {data &&
-            data[0]?.results?.map((pokemonItem: any, index: any) => {
-              return (
-                <PokemonItem key={index}>
-                  <Link href={`/pokemon/${pokemonItem?.name}`}>
-                    <StyledImage
-                      className={'rounded-xl'}
-                      height={300}
-                      width={300}
-                      src={`https://img.pokemondb.net/artwork/large/${pokemonItem?.name}.jpg`}
-                      alt={pokemonItem?.name}
-                    />
-                    <hr />
-                    <div className={'text-xl font-bold p-5'}>
-                      {pokemonItem?.name}
-                    </div>
-                  </Link>
-                </PokemonItem>
-              )
-            })}
-        </Grid>
+        <Grid>{renderPokemon(data[0]?.results || [])}</Grid>
       )}
-
-      {data && searchQuery.length > 0 && (
-        <Grid>
-          {data?.map((pokemonItem: any, index: any) => {
-            return (
-              <PokemonItem key={index}>
-                <Link href={`/pokemon/${pokemonItem?.name}`}>
-                  <StyledImage
-                    className={'rounded-xl'}
-                    height={300}
-                    width={300}
-                    src={`https://img.pokemondb.net/artwork/large/${pokemonItem?.name}.jpg`}
-                    alt={pokemonItem?.name}
-                  />
-                  <hr />
-                  <div className={'text-xl font-bold py-5'}>
-                    {pokemonItem?.name}
-                  </div>
-                </Link>
-              </PokemonItem>
-            )
-          })}
-        </Grid>
-      )}
+      {data && searchQuery.length > 0 && <Grid>{renderPokemon(data)}</Grid>}
     </Container>
   )
 }
