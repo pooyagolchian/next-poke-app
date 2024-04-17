@@ -11,7 +11,7 @@ interface Pokemon {
 }
 
 const Container = styled.main.attrs({
-  className: 'max-w-7xl mx-auto px-10 lg:px-0',
+  className: 'w-3/5 mx-auto px-10 lg:px-0',
 })``
 
 const Grid = styled.div.attrs({

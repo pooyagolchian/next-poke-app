@@ -1,4 +1,5 @@
 'use client'
+
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from '../../services/pokemon'
