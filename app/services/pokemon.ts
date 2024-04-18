@@ -1,12 +1,6 @@
 import api from '../api'
-import { PokemonType, Type, Ability } from '../types/pokemonType'
+import { PokemonType } from '../types/pokemonType'
 
-export const fetchPokemon = async (
-  searchQuery: string,
-): Promise<PokemonType> => {
-  const { data } = await api.get<PokemonType>(`pokemon`)
-  return data
-}
 export const fetchPokemonByName = async (
   pokemon: string,
   type?: string,
@@ -22,13 +16,4 @@ export const fetchPokemonByName = async (
     console.error('Error fetching Pokémon by name:', error)
     return []
   }
-}
-export const fetchType = async (type: string): Promise<Type> => {
-  const { data } = await api.get<Type>(`type/${type}`)
-  return data
-}
-
-export const fetchAbility = async (ability: string): Promise<Ability> => {
-  const { data } = await api.get<Ability>(`ability/${ability}`)
-  return data
 }
