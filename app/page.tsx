@@ -1,16 +1,18 @@
 'use client'
-import React, { useState } from 'react'
+import React, {
+  useState,
+  useMemo,
+  useEffec,
+  useEffectt,
+  useEffect,
+} from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from './services/pokemon'
 import { PokemonType } from './types/pokemonType'
 import Image from 'next/image'
 import Link from 'next/link'
-import debounce from 'lodash.debounce'
-
-interface Pokemon {
-  name: string
-}
+import debounce from 'debounce'
 
 const Container = styled.main.attrs({
   className: 'w-full lg:w-4/5 mx-auto px-10 lg:px-0',
@@ -39,15 +41,35 @@ const Home = () => {
   const { data, isLoading, isError, refetch } = useQuery<PokemonType[]>({
     queryFn: async () => await fetchPokemonByName(searchQuery, type),
     queryKey: ['pokemon', searchQuery, type],
+    enabled: false,
   })
 
-  const debouncedApiCall = debounce(async (query: string, type: string) => {
-    await refetch()
-  }, 2000)
+  useEffect(() => {
+    refetch()
+  }, [])
 
-  const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
+  const debouncedApiCall = useMemo(
+    () =>
+      debounce(() => {
+        refetch()
+      }, 500),
+    [refetch],
+  )
+
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await debouncedApiCall(searchQuery, type)
+    debouncedApiCall()
+  }
+
+  // Update value setters to trigger debounce
+  const updateSearchQuery = (value: string) => {
+    setSearchQuery(value)
+    debouncedApiCall()
+  }
+
+  const updateType = (value: string) => {
+    setType(value)
+    debouncedApiCall()
   }
 
   const renderPokemon = (pokemonList: PokemonType[]) => {
@@ -74,14 +96,14 @@ const Home = () => {
         <input
           type="text"
           value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          onChange={e => updateSearchQuery(e.target.value)}
           placeholder="Search Pokémon"
           className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:border-blue-500"
         />
         <input
           type="text"
           value={type}
-          onChange={e => setType(e.target.value)}
+          onChange={e => updateType(e.target.value)}
           placeholder="Type"
           className="px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500"
         />
