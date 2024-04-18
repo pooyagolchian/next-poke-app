@@ -7,6 +7,8 @@ import Image from 'next/image'
 import styled from 'styled-components'
 import MoveChart from '../../components/MoveChart'
 import Link from 'next/link'
+import LoadingSpinner from '../../components/LoadingSpinner'
+import React from 'react'
 
 const PokemonContainer = styled.div.attrs({
   className: 'm-5 flex flex-col items-center',
@@ -25,7 +27,13 @@ const Pokemon = () => {
     enabled: !!name,
   })
 
-  if (isLoading) return <div className={'my-10'}>Loading</div>
+  if (isLoading)
+    return (
+      <div className={'my-10'}>
+        {' '}
+        <LoadingSpinner />
+      </div>
+    )
   if (isError) return <div className={'my-10'}>Pokemon not found!r</div>
 
   return (

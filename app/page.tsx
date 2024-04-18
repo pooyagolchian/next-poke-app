@@ -7,6 +7,7 @@ import { PokemonType } from './types/pokemonType'
 import Image from 'next/image'
 import Link from 'next/link'
 import debounce from 'debounce'
+import LoadingSpinner from './components/LoadingSpinner'
 
 const Container = styled.main.attrs({
   className: 'w-full lg:w-4/5 mx-auto px-10 lg:px-0',
@@ -114,7 +115,11 @@ const Home = () => {
           Search
         </button>
       </form>
-      {isLoading && <div className={'my-10'}>Loading...</div>}
+      {isLoading && (
+        <div className={'my-10'}>
+          <LoadingSpinner />
+        </div>
+      )}
       {isError && <div className={'my-10'}>Pokemon not found!</div>}
       {data && searchQuery.length === 0 && (
         <Grid>{renderPokemon(data[0]?.results || [])}</Grid>
