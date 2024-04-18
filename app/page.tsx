@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from './services/pokemon'
-import { Pokemon } from './types/pokemon'
+import { PokemonType } from './types/pokemonType'
 import Image from 'next/image'
 import Link from 'next/link'
 import debounce from 'lodash.debounce'
@@ -36,7 +36,7 @@ const Home = () => {
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [type, setType] = useState<string>('')
 
-  const { data, isLoading, isError, refetch } = useQuery<Pokemon[]>({
+  const { data, isLoading, isError, refetch } = useQuery<PokemonType[]>({
     queryFn: async () => await fetchPokemonByName(searchQuery, type),
     queryKey: ['pokemon', searchQuery, type],
   })
@@ -50,7 +50,7 @@ const Home = () => {
     await debouncedApiCall(searchQuery, type)
   }
 
-  const renderPokemon = (pokemonList: Pokemon[]) => {
+  const renderPokemon = (pokemonList: PokemonType[]) => {
     return pokemonList.map((pokemonItem, index) => (
       <PokemonItem key={index}>
         <Link href={`/pokemon/${pokemonItem?.name}`}>

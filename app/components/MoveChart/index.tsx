@@ -2,21 +2,21 @@
 import React from 'react'
 import ReactApexChart from 'react-apexcharts'
 import { ApexOptions } from 'apexcharts'
-import { MovesChartProps } from '../../types/pokemon'
+import { MovesChartProps } from '../../types/pokemonType'
 
-const MovesChart: React.FC<MovesChartProps> = ({ moves }) => {
+const MovesChart = ({ moves }: MovesChartProps) => {
   const chartData = moves
-    .map(moveEntry => {
+    ?.map(moveEntry => {
       const levelLearned = moveEntry?.version_group_details?.map(
         vgd => vgd?.level_learned_at,
       )
-      const level = Math.min(...levelLearned)
+      const level = Math.min(...(levelLearned ?? [0])) // Default to 0 if levelLearned is undefined
       const name = moveEntry?.move?.name
       return { level, name }
     })
     .filter(move => move.level > 0)
 
-  chartData.sort((a, b) => a.level - b.level)
+  chartData?.sort((a, b) => a.level - b.level)
 
   const options: ApexOptions = {
     chart: {
@@ -31,7 +31,7 @@ const MovesChart: React.FC<MovesChartProps> = ({ moves }) => {
       enabled: false,
     },
     xaxis: {
-      categories: chartData.map(move => move.name),
+      categories: chartData?.map(move => move.name),
     },
     title: {
       text: 'Pokémon Moves by Level Learned',
@@ -41,7 +41,7 @@ const MovesChart: React.FC<MovesChartProps> = ({ moves }) => {
   const series: ApexAxisChartSeries = [
     {
       name: 'Level Learned',
-      data: chartData.map(move => move?.level),
+      data: chartData?.map(move => move.level) ?? [], // Default to an empty array if chartData is undefined
     },
   ]
 

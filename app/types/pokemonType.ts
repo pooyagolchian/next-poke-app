@@ -1,4 +1,4 @@
-export interface Pokemon {
+export interface PokemonType {
   results: any
   id: number
   name: string
