@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, usePathname, useSearchParams } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from '../../services/pokemon'
 import Image from 'next/image'
@@ -38,7 +38,9 @@ const Pokemon = () => {
           Back to Home
         </Link>
         <Card>
-          <h1 className="text-2xl font-bold text-white">{data?.name}</h1>
+          <h1 className="text-2xl font-bold text-white">
+            {data && data[0]?.name}
+          </h1>
           <Image
             src={`https://img.pokemondb.net/artwork/large/${data && data[0]?.name}.jpg`}
             alt={`${data && data[0]?.name}`}

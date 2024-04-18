@@ -5,6 +5,7 @@ export interface Pokemon {
   sprites: {
     front_default: string
   }
+  moves: Move[] | undefined
 }
 
 export interface Type {
@@ -35,5 +36,5 @@ export interface VersionGroupDetail {
 }
 
 export interface MovesChartProps {
-  moves: Move[]
+  moves: Move[] | undefined
 }
