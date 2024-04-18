@@ -40,7 +40,7 @@ const Home = () => {
 
   useEffect(() => {
     refetch()
-  }, [])
+  }, [refetch])
 
   const debouncedApiCall = useMemo(
     () =>
@@ -55,7 +55,6 @@ const Home = () => {
     debouncedApiCall()
   }
 
-  // Update value setters to trigger debounce
   const updateSearchQuery = (value: string) => {
     setSearchQuery(value)
     debouncedApiCall()
