@@ -5,13 +5,16 @@ import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from '../../services/pokemon'
 import Image from 'next/image'
 import styled from 'styled-components'
+import MoveChart from '../../components/MoveChart'
+import Link from 'next/link'
 
-const PokemonContainer = styled.div`
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
+const PokemonContainer = styled.div.attrs({
+  className: 'm-5 flex flex-col items-center',
+})``
+const Card = styled.div.attrs({
+  className:
+    'p-6 max-w-sm mx-auto bg-gradient-to-r from-blue-500 to-teal-500 rounded-lg shadow-md flex flex-col items-center mb-10',
+})``
 
 const Pokemon = () => {
   const pathname = usePathname()
@@ -26,15 +29,27 @@ const Pokemon = () => {
   if (isError) return <div>Sorry There was an Error</div>
 
   return (
-    <PokemonContainer>
-      <h1>{data?.name}</h1>
-      <Image
-        src={`https://img.pokemondb.net/artwork/large/${data && data[0]?.name}.jpg`}
-        alt={`${data && data[0]?.name}`}
-        width={300}
-        height={300}
-      />
-    </PokemonContainer>
+    <>
+      <PokemonContainer>
+        <Link
+          className="text-white bg-gradient-to-r from-blue-400 to-indigo-800 px-4 py-2 rounded-r-md hover:bg-blue-900 rounded mb-10"
+          href="/"
+        >
+          Back to Home
+        </Link>
+        <Card>
+          <h1 className="text-2xl font-bold text-white">{data?.name}</h1>
+          <Image
+            src={`https://img.pokemondb.net/artwork/large/${data && data[0]?.name}.jpg`}
+            alt={`${data && data[0]?.name}`}
+            width={300}
+            height={300}
+            className="my-4 rounded-lg"
+          />
+        </Card>
+        <MoveChart moves={data && data[0]?.moves} />
+      </PokemonContainer>
+    </>
   )
 }
 
