@@ -1,17 +1,19 @@
 'use client'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from './services/pokemon'
+import { Pokemon } from './types/pokemon'
 import Image from 'next/image'
 import Link from 'next/link'
+import debounce from 'lodash.debounce'
 
 interface Pokemon {
   name: string
 }
 
 const Container = styled.main.attrs({
-  className: 'w-3/5 mx-auto px-10 lg:px-0',
+  className: 'w-full lg:w-4/5 mx-auto px-10 lg:px-0',
 })``
 
 const Grid = styled.div.attrs({
@@ -30,16 +32,22 @@ const StyledImage = styled(Image)`
   object-fit: cover;
 `
 
-const Home = (): JSX.Element => {
+const Home = () => {
   const [searchQuery, setSearchQuery] = useState<string>('')
+  const [type, setType] = useState<string>('')
+
   const { data, isLoading, isError, refetch } = useQuery<Pokemon[]>({
-    queryFn: async () => await fetchPokemonByName(searchQuery),
-    queryKey: ['pokemon', searchQuery],
+    queryFn: async () => await fetchPokemonByName(searchQuery, type),
+    queryKey: ['pokemon', searchQuery, type],
   })
+
+  const debouncedApiCall = debounce(async (query: string, type: string) => {
+    await refetch()
+  }, 2000)
 
   const handleSearch = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    await refetch()
+    await debouncedApiCall(searchQuery, type)
   }
 
   const renderPokemon = (pokemonList: Pokemon[]) => {
@@ -70,6 +78,13 @@ const Home = (): JSX.Element => {
           placeholder="Search Pokémon"
           className="w-full px-4 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:border-blue-500"
         />
+        <input
+          type="text"
+          value={type}
+          onChange={e => setType(e.target.value)}
+          placeholder="Type"
+          className="px-4 py-2 border border-gray-300 focus:outline-none focus:border-blue-500"
+        />
         <button
           type="submit"
           className="bg-gradient-to-r from-blue-400 to-indigo-800 text-white px-4 py-2 rounded-r-md"
@@ -77,8 +92,9 @@ const Home = (): JSX.Element => {
           Search
         </button>
       </form>
-      {isLoading && <div>Loading</div>}
+      {isLoading && <div>Loading...</div>}
       {isError && <div>Sorry, there was an error</div>}
+      {data && data[0]?.results?.length === 0 && <div>Pokemon not found!</div>}
       {data && searchQuery.length === 0 && (
         <Grid>{renderPokemon(data[0]?.results || [])}</Grid>
       )}

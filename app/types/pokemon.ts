@@ -1,4 +1,3 @@
-// app/types/pokemon.ts
 export interface Pokemon {
   results: any
   id: number
