@@ -14,6 +14,6 @@ export const fetchPokemonByName = async (
     return [data]
   } catch (error) {
     console.error('Error fetching Pokémon by name:', error)
-    return []
+    throw error
   }
 }

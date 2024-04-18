@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from './services/pokemon'
@@ -33,7 +33,14 @@ const Home = () => {
   const [type, setType] = useState<string>('')
 
   const { data, isLoading, isError, refetch } = useQuery<PokemonType[]>({
-    queryFn: async () => await fetchPokemonByName(searchQuery, type),
+    queryFn: async () => {
+      try {
+        return await fetchPokemonByName(searchQuery, type)
+      } catch (error) {
+        console.error('Error fetching data: ', error)
+        throw error
+      }
+    },
     queryKey: ['pokemon', searchQuery, type],
     enabled: false,
   })
@@ -107,9 +114,8 @@ const Home = () => {
           Search
         </button>
       </form>
-      {isLoading && <div>Loading...</div>}
-      {isError && <div>Sorry, there was an error</div>}
-      {data && data[0]?.results?.length === 0 && <div>Pokemon not found!</div>}
+      {isLoading && <div className={'my-10'}>Loading...</div>}
+      {isError && <div className={'my-10'}>Pokemon not found!</div>}
       {data && searchQuery.length === 0 && (
         <Grid>{renderPokemon(data[0]?.results || [])}</Grid>
       )}

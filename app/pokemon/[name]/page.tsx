@@ -25,8 +25,8 @@ const Pokemon = () => {
     enabled: !!name,
   })
 
-  if (isLoading) return <div>Loading</div>
-  if (isError) return <div>Sorry There was an Error</div>
+  if (isLoading) return <div className={'my-10'}>Loading</div>
+  if (isError) return <div className={'my-10'}>Pokemon not found!r</div>
 
   return (
     <>
