@@ -1,11 +1,5 @@
 'use client'
-import React, {
-  useState,
-  useMemo,
-  useEffec,
-  useEffectt,
-  useEffect,
-} from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { useQuery } from '@tanstack/react-query'
 import { fetchPokemonByName } from './services/pokemon'
